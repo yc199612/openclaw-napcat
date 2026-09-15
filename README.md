@@ -135,11 +135,14 @@ OpenClaw 的 QQ 消息通道插件，基于 [NapCat](https://github.com/NapNeko/
 
 ## 安装
 
-**方式一：从 Gitee 克隆（推荐）**
+**方式一：从 Gitee / GitHub 克隆（推荐）**
 
 ```bash
 cd ~/.openclaw/extensions
+# Gitee
 git clone https://gitee.com/yc1996/openclaw-napcat.git napcat
+# 或 GitHub
+git clone https://github.com/963972635/openclaw-napcat.git napcat
 cd napcat && npm install --omit=dev
 ```
 

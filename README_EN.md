@@ -135,11 +135,14 @@ Let your AI assistant fully control QQ interactions through natural language -- 
 
 ## Installation
 
-**Option 1: Clone from Gitee (recommended)**
+**Option 1: Clone from Gitee / GitHub (recommended)**
 
 ```bash
 cd ~/.openclaw/extensions
+# Gitee
 git clone https://gitee.com/yc1996/openclaw-napcat.git napcat
+# or GitHub
+git clone https://github.com/963972635/openclaw-napcat.git napcat
 cd napcat && npm install --omit=dev
 ```
 

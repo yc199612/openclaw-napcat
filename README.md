@@ -142,7 +142,7 @@ cd ~/.openclaw/extensions
 # Gitee
 git clone https://gitee.com/yc1996/openclaw-napcat.git napcat
 # 或 GitHub
-git clone https://github.com/963972635/openclaw-napcat.git napcat
+git clone https://github.com/yc199612/openclaw-napcat.git napcat
 cd napcat && npm install --omit=dev
 ```
 

@@ -7,12 +7,13 @@ OpenClaw extension for QQ messaging via [NapCat](https://github.com/NapNeko/NapC
 Let your AI assistant fully control QQ interactions through natural language -- like, poke, mute, kick, query user profiles, manage groups, and more.
 
 > **This repository is an updated maintenance fork of the original [@hyl_aa/openclaw-napcat](https://github.com/Aliang1337/openclaw-napcat) plugin.**
-> It adapts the plugin to the openclaw 2026.9.x plugin SDK and gateway protocol while keeping every original feature (45 QQ tools, voice-to-text, multi-account, etc.) fully intact.
+> It adapts the plugin to the openclaw 2026.9.x / 2026.10.x plugin SDK and gateway protocol while keeping every original feature (45 QQ tools, voice-to-text, multi-account, etc.) fully intact.
 
 ## What's New (vs. the original)
 
 | Update | Description |
 |------|------|
+| **openclaw 2026.10.x compatibility** | Adapts to the `plugin-sdk/channel-lifecycle` subpath removed in the 2026.10.2 SDK (`createAccountStatusSink` and other exports moved into `channel-outbound`); v2.1.0 remains compatible with 2026.9.x |
 | **openclaw 2026.9.x SDK migration** | All 16 `openclaw/plugin-sdk/*` subpath imports adapted to the new SDK; new `registerChannel` signature (dock parameter removed) |
 | **connect.challenge handshake compatibility** | New gateway-path mode: registers a plugin WS route on the openclaw gateway port via `registerHttpRoute` + `handleUpgrade`. NapCat connections to `ws://<host>:<port>/napcat/ws` are handled directly by the plugin, **fully bypassing the connect.challenge mandatory handshake that plain OneBot 11 clients cannot answer on 2026.9.x gateways** |
 | **Canonical session keys** | Session keys now built with the official `buildAgentSessionKey` (`agent:<agentId>:...` format); fixes `SessionCanonicalKeyMigrationRequiredError` write rejections caused by the old inline key concatenation (not curable by `openclaw doctor --fix`) |

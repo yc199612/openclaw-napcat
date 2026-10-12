@@ -1,7 +1,7 @@
 {
   "name": "openclaw-napcat-2026.9",
-  "version": "2.0.0",
-  "description": "OpenClaw QQ channel plugin via NapCat (OneBot 11), adapted for openclaw 2026.9.x — maintained fork of @hyl_aa/openclaw-napcat",
+  "version": "2.1.0",
+  "description": "OpenClaw QQ channel plugin via NapCat (OneBot 11), compatible with openclaw 2026.9.x and 2026.10.x — maintained fork of @hyl_aa/openclaw-napcat",
   "type": "module",
   "license": "MIT",
   "repository": {

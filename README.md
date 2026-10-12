@@ -7,12 +7,13 @@ OpenClaw 的 QQ 消息通道插件，基于 [NapCat](https://github.com/NapNeko/
 让 AI 助手通过自然语言完全操控 QQ 互动——点赞、戳一戳、禁言、踢人、查询资料、群管理等等。
 
 > **本仓库是 [@hyl_aa/openclaw-napcat](https://github.com/Aliang1337/openclaw-napcat) 原插件的更新维护版本。**
-> 在原插件功能基础上，适配 openclaw 2026.9.x 系列的新插件 SDK 与网关协议。原插件的全部功能（45 个 QQ 工具、语音转文字、多账号等）完整保留。
+> 在原插件功能基础上，适配 openclaw 2026.9.x / 2026.10.x 系列的新插件 SDK 与网关协议。原插件的全部功能（45 个 QQ 工具、语音转文字、多账号等）完整保留。
 
 ## 主要更新（相对原版）
 
 | 更新项 | 说明 |
 |------|------|
+| **openclaw 2026.10.x 兼容** | 适配 2026.10.2 SDK 移除的 `plugin-sdk/channel-lifecycle` 子路径（`createAccountStatusSink` 等导出已并入 `channel-outbound`）；同版本号 v2.1.0 依然兼容 2026.9.x |
 | **openclaw 2026.9.x SDK 迁移** | 全部 16 个 `openclaw/plugin-sdk/*` 子路径 import 适配新版规范；`registerChannel` 新签名（dock 参数已移除） |
 | **connect.challenge 握手兼容** | 新增网关路径模式：通过 `registerHttpRoute` + `handleUpgrade` 在 openclaw 网关端口上注册插件 WS 路由，NapCat 连接 `ws://<host>:<port>/napcat/ws` 时由插件直接接管，**彻底绕过 2026.9.x 网关对纯 OneBot 11 客户端无法应答的 connect.challenge 强制握手** |
 | **规范化 session key** | 会话 key 改用官方 `buildAgentSessionKey` 构造（`agent:<agentId>:...` 格式），修复旧版内联拼接导致的 `SessionCanonicalKeyMigrationRequiredError` 拒写问题（该问题 `openclaw doctor --fix` 无法根治） |

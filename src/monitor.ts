@@ -889,7 +889,7 @@ async function processMessage(
     cfg: config,
     channel: "napcat",
     accountId: account.accountId,
-  });
+  }) as "off" | "bullets" | "code" | "block";
 
   const { onModelSelected, ...prefixOptions } = createReplyPrefixOptions({
     cfg: config,

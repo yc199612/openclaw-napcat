@@ -33,10 +33,10 @@ import {
   applySetupAccountConfigPatch,
 } from "openclaw/plugin-sdk/setup";
 
-// 账号状态 sink（channel-lifecycle）
+// 账号状态 sink（2026.10 起 channel-lifecycle 并入 channel-outbound）
 import {
   createAccountStatusSink,
-} from "openclaw/plugin-sdk/channel-lifecycle";
+} from "openclaw/plugin-sdk/channel-outbound";
 
 // allowFrom 小写格式化（allow-from）
 import {

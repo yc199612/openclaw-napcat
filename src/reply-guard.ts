@@ -51,3 +51,37 @@ export function wasToolSent(kind: "group" | "private", id: string | number): boo
   const at = sentChats.get(chatKey(kind, id));
   return typeof at === "number" && Date.now() - at <= EXPIRY_MS;
 }
+
+// ---------------------------------------------------------------------------
+// qq_send_message hard duplicate guard (C2)
+//
+// Why: the model (deepseek-flash) occasionally calls qq_send_message TWICE in
+// one turn (once after the first tool result comes back) — the user receives
+// two similar/identical messages. The end-of-turn suppress above cannot see
+// this path (both messages go through the tool, not the deliver callback).
+// Distinct marker so file/forward sends don't trip the qq_send_message block.
+// ---------------------------------------------------------------------------
+
+const sentMsgChats = new Map<string, number>();
+
+/** Record that qq_send_message delivered to this chat during the current turn. */
+export function markToolSentMessage(kind: "group" | "private", id: string | number): void {
+  if (sentMsgChats.size > 256) {
+    const now = Date.now();
+    for (const [key, at] of sentMsgChats) {
+      if (now - at > EXPIRY_MS) sentMsgChats.delete(key);
+    }
+  }
+  sentMsgChats.set(chatKey(kind, id), Date.now());
+}
+
+/** Clear the qq_send_message marker — called when a new inbound turn begins. */
+export function clearToolSentMessage(kind: "group" | "private", id: string | number): void {
+  sentMsgChats.delete(chatKey(kind, id));
+}
+
+/** True when qq_send_message already sent to this chat this turn. */
+export function wasToolSentMessage(kind: "group" | "private", id: string | number): boolean {
+  const at = sentMsgChats.get(chatKey(kind, id));
+  return typeof at === "number" && Date.now() - at <= EXPIRY_MS;
+}

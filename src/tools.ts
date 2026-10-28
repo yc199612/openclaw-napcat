@@ -11,7 +11,7 @@ import {
   uploadGroupFile,
   uploadPrivateFile } from "./api.js";
 import { resolveNapCatAccount } from "./accounts.js";
-import { markToolSent } from "./reply-guard.js";
+import { markToolSent, markToolSentMessage, wasToolSentMessage } from "./reply-guard.js";
 
 // ---------------------------------------------------------------------------
 // Helpers — plain JSON Schema objects (no typebox to avoid jiti dual-instance)
@@ -667,6 +667,21 @@ export function createQQSendMessageTool(cfg: OpenClawConfig): ChannelAgentTool {
         return { content: [{ type: "text" as const, text: `Invalid target: ${target}` }], details: undefined };
       }
 
+      // C2 hard guard: one qq_send_message per chat per turn. The model
+      // sometimes calls this tool a second time after the first result comes
+      // back, sending the user a duplicate message. Block the second call.
+      if (wasToolSentMessage(isGroup ? "group" : "private", id)) {
+        return {
+          content: [{
+            type: "text" as const,
+            text:
+              `BLOCKED: duplicate send to ${target} refused — a message was already sent to this chat in the current turn. ` +
+              `Do NOT send another message to this chat this turn; your reply is already delivered. End the turn now.`,
+          }],
+          details: undefined,
+        };
+      }
+
       const send = async (segments: import("./types.js").OneBotSegment[]) => {
         if (isGroup) {
           await sendGroupMsg(httpApi, id, segments, accessToken);
@@ -711,9 +726,13 @@ export function createQQSendMessageTool(cfg: OpenClawConfig): ChannelAgentTool {
       // Mark this chat so the end-of-turn reply delivery is suppressed
       // (prevents duplicate messages when the agent replies via this tool).
       markToolSent(isGroup ? "group" : "private", id);
+      markToolSentMessage(isGroup ? "group" : "private", id);
 
       return {
-        content: [{ type: "text" as const, text: `Message sent to ${target}.` }],
+        content: [{
+          type: "text" as const,
+          text: `Message sent to ${target}. Reply delivered — this turn's reply is now COMPLETE. Do not send another message to ${target} this turn.`,
+        }],
         details: undefined,
       };
     },

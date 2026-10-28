@@ -341,7 +341,7 @@ import { getNapCatRuntime } from "./runtime.js";
 // SessionCanonicalKeyMigrationRequiredError 拒写。
 import { buildAgentSessionKey } from "openclaw/plugin-sdk/core";
 // 回合内 qq_send_message 已回复的会话标记（防双发）
-import { clearToolSent, wasToolSent } from "./reply-guard.js";
+import { clearToolSent, clearToolSentMessage, wasToolSent } from "./reply-guard.js";
 
 export type NapCatRuntimeEnv = {
   log?: (message: string) => void;
@@ -631,6 +631,9 @@ async function processMessage(
   // this turn's end-of-turn reply is delivered normally (unless the agent
   // replies via qq_send_message again during this turn).
   clearToolSent(isGroup ? "group" : "private", chatId);
+  // C2: also clear the qq_send_message per-turn marker so each NEW turn may
+  // send once (the block only forbids a second send within the same turn).
+  clearToolSentMessage(isGroup ? "group" : "private", chatId);
 
   // In group chats, require @bot mention
   if (isGroup && !hasBotMention(event.message, selfId)) {

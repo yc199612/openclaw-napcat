@@ -753,6 +753,9 @@ export function createQQUploadFileTool(cfg: OpenClawConfig): ChannelAgentTool {
       } else {
         await uploadPrivateFile(httpApi, id, file, name, accessToken);
       }
+      // Mark this chat so the end-of-turn reply delivery is suppressed
+      // (prevents duplicate messages when the agent replies via this tool).
+      markToolSent(isGroup ? "group" : "private", id);
 
       return {
         content: [{ type: "text" as const, text: `File "${name}" uploaded to ${target}.` }],
@@ -795,6 +798,9 @@ export function createQQForwardMessageTool(cfg: OpenClawConfig): ChannelAgentToo
       } else {
         await sendPrivateMsg(httpApi, id, [forwardSegment], accessToken);
       }
+      // Mark this chat so the end-of-turn reply delivery is suppressed
+      // (prevents duplicate messages when the agent replies via this tool).
+      markToolSent(isGroup ? "group" : "private", id);
 
       return {
         content: [{ type: "text" as const, text: `Message ${message_id} forwarded to ${target}.` }],
@@ -1405,6 +1411,9 @@ export function createQQSendGroupForwardMsgTool(cfg: OpenClawConfig): ChannelAge
       const { httpApi, accessToken } = resolveHttpApi(cfg);
       const { group_id, messages } = args as { group_id: number; messages: unknown[] };
       await callOneBotApi(httpApi, "send_group_forward_msg", { group_id, messages }, { accessToken });
+      // Mark this chat so the end-of-turn reply delivery is suppressed
+      // (prevents duplicate messages when the agent replies via this tool).
+      markToolSent("group", group_id);
       return { content: [{ type: "text" as const, text: `Merged forward message sent to group ${group_id}.` }], details: undefined };
     },
   };
@@ -1430,6 +1439,9 @@ export function createQQSendPrivateForwardMsgTool(cfg: OpenClawConfig): ChannelA
       const { httpApi, accessToken } = resolveHttpApi(cfg);
       const { user_id, messages } = args as { user_id: number; messages: unknown[] };
       await callOneBotApi(httpApi, "send_private_forward_msg", { user_id, messages }, { accessToken });
+      // Mark this chat so the end-of-turn reply delivery is suppressed
+      // (prevents duplicate messages when the agent replies via this tool).
+      markToolSent("private", user_id);
       return { content: [{ type: "text" as const, text: `Merged forward message sent to user ${user_id}.` }], details: undefined };
     },
   };
